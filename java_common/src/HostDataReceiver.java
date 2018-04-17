@@ -1,5 +1,5 @@
-import common_classes.SDPMessage;
-import common_classes.UDPConnection;
+import commonClasses.SDPMessage;
+import commonClasses.UDPConnection;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class HostDataReceiver extends Thread {
     public enum SCPCommands {
         SET_IPTAG(26);
-        private short value;
+        private final short value;
 
         SCPCommands(int value) {
             this.value = (short) value;
@@ -69,9 +69,10 @@ public class HostDataReceiver extends Thread {
     private final int max_seq_num;
     private boolean finished;
     private int miss_cnt;
-    private BitSet received_seq_nums;
+    private final BitSet received_seq_nums;
 
-    Logger log = Logger.getLogger(HostDataReceiver.class.getName());
+    static final Logger log = Logger.getLogger(
+        HostDataReceiver.class.getName());
 
     public HostDataReceiver(int port_connection, int placement_x,
             int placement_y, int placement_p, String hostname,
@@ -103,7 +104,7 @@ public class HostDataReceiver extends Thread {
     /**
      * Divide one integer by another with rounding up.
      */
-    private static final int ceildiv(int numerator, int denominator) {
+    private static int ceildiv(int numerator, int denominator) {
         return (int) ceil((float) numerator / (float) denominator);
     }
 
@@ -185,7 +186,7 @@ public class HostDataReceiver extends Thread {
         int j = 0;
 
         // Calculate missing sequence numbers and add them to "missing"
-        log.fine("max seq num of " + max_seq_num);
+        log.log(Level.FINE, "max seq num of {0}", max_seq_num);
         for (i = 0; i < max_seq_num; i++) {
             if (!received_seq_nums.get(i)) {
                 missing_seq[j++] = i;
@@ -194,9 +195,9 @@ public class HostDataReceiver extends Thread {
         }
 
         if (log.isLoggable(Level.FINE)) {
-            log.fine("missing" + miss_dim);
+            log.log(Level.FINE, "missing{0}", miss_dim);
             for (i = 0; i < miss_dim; i++) {
-                log.fine("missing seq " + missing_seq[i]);
+                log.log(Level.FINE, "missing seq {0}", missing_seq[i]);
             }
         }
 
