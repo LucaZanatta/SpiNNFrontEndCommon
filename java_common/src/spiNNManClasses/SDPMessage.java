@@ -1,4 +1,4 @@
-package commonClasses;
+package spiNNManClasses;
 
 import static java.lang.System.arraycopy;
 

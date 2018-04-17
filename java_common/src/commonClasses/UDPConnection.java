@@ -79,10 +79,6 @@ public class UDPConnection implements AutoCloseable {
         return packet;
     }
 
-    public void sendData(SDPMessage message) {
-        sendData(message.convert_to_byte_array(), message.length_in_bytes());
-    }
-
     public void sendData(byte[] data, int length) {
         DatagramPacket packet = new DatagramPacket(data, length);
         try {

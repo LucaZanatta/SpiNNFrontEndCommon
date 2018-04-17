@@ -1,9 +1,11 @@
-import commonClasses.SDPMessage;
-import commonClasses.UDPConnection;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.logging.Level.SEVERE;
+
+import spiNNManClasses.SDPConnection;
+import spiNNManClasses.SDPMessage;
+import spiNNManClasses.Enums.SCPCommands;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,19 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HostDataReceiver extends Thread {
-    public enum SCPCommands {
-        SET_IPTAG(26);
-        private final short value;
-
-        SCPCommands(int value) {
-            this.value = (short) value;
-        }
-
-        public short getValue() {
-            return value;
-        }
-    }
-
     private static final int QUEUE_CAPACITY = 1024;
 
     // consts for data and converting between words and bytes
@@ -44,10 +33,6 @@ public class HostDataReceiver extends Thread {
     private static final int END_FLAG_SIZE_IN_BYTES = 4;
     private static final int SEQUENCE_NUMBER_SIZE = 4;
     private static final int LAST_MESSAGE_FLAG_BIT_MASK = 0x80000000;
-
-    private static final int SDP_PACKET_START_SENDING_COMMAND_ID = 100;
-    private static final int SDP_PACKET_START_MISSING_SEQ_COMMAND_ID = 1000;
-    private static final int SDP_PACKET_MISSING_SEQ_COMMAND_ID = 1001;
 
     // time out constants
     public static final int TIMEOUT_RETRY_LIMIT = 20;
@@ -110,9 +95,9 @@ public class HostDataReceiver extends Thread {
 
     public byte[] get_data() throws InterruptedException {
         // create connection
-        UDPConnection sender = null;
+        SDPConnection sender = null;
         try {
-            sender = new UDPConnection(17893, hostname,
+            sender = new SDPConnection(17893, hostname,
                     TIMEOUT_PER_RECEIVE_IN_MILLISECONDS);
         } catch (SocketException ex) {
             log.log(SEVERE, "failed to create UDP connection", ex);
@@ -167,7 +152,7 @@ public class HostDataReceiver extends Thread {
         return byteBuffer.array();
     }
 
-    public boolean retransmit_missing_sequences(UDPConnection sender,
+    public boolean retransmit_missing_sequences(SDPConnection sender,
             BitSet received_seq_nums) throws InterruptedException {
 
         int length_via_format2;
@@ -235,7 +220,8 @@ public class HostDataReceiver extends Thread {
                 data.order(LITTLE_ENDIAN);
 
                 // Pack flag and n packets
-                data.putInt(SDP_PACKET_START_MISSING_SEQ_COMMAND_ID);
+                data.putInt(DirectStreamCommands.START_MISSING_SEQUENCES
+                        .getValue());
                 data.putInt(n_packets);
 
                 // Update state
@@ -251,7 +237,8 @@ public class HostDataReceiver extends Thread {
                 data.order(LITTLE_ENDIAN);
 
                 // Pack flag
-                data.putInt(SDP_PACKET_MISSING_SEQ_COMMAND_ID);
+                data.putInt(
+                        DirectStreamCommands.MORE_MISSING_SEQUENCES.getValue());
                 length_left_in_packet -= 1;
             }
 
@@ -263,7 +250,7 @@ public class HostDataReceiver extends Thread {
 
             seq_num_offset += length_left_in_packet;
 
-            sender.sendData(new SDPMessage(placement_x, placement_y,
+            sender.send(new SDPMessage(placement_x, placement_y,
                     placement_p, port_connection, SDPMessage.REPLY_NOT_EXPECTED,
                     255, 255, 255, 0, 0, data.array()));
 
@@ -273,7 +260,7 @@ public class HostDataReceiver extends Thread {
         return false;
     }
 
-    public void process_data(UDPConnection sender, DatagramPacket packet)
+    public void process_data(SDPConnection sender, DatagramPacket packet)
             throws Exception {
         int first_packet_element;
         int offset;
@@ -324,26 +311,26 @@ public class HostDataReceiver extends Thread {
         }
     }
 
-    private void sendInitialCommand(UDPConnection sender,
-            UDPConnection receiver) {
+    private void sendInitialCommand(SDPConnection sender,
+            SDPConnection receiver) {
         // Build an SCP request to set up the IP Tag associated to this socket
         byte[] scp_req = build_set_iptag_req(true,
                 receiver.getLocalSocketAddress());
 
         // Send SCP request and get the reply back
-        sender.sendData(new SDPMessage(chip_x, chip_y, 0, 0,
+        sender.send(new SDPMessage(chip_x, chip_y, 0, 0,
                 SDPMessage.REPLY_EXPECTED, 255, 255, 255, 0, 0, scp_req));
-        sender.receiveData(300); // TODO: Validate this reply
+        sender.receive(); // TODO: Validate this reply
 
         // Create Data request SDP packet
         ByteBuffer byteBuffer = ByteBuffer.allocate(3 * 4);
         byteBuffer.order(LITTLE_ENDIAN);
-        byteBuffer.putInt(SDP_PACKET_START_SENDING_COMMAND_ID);
+        byteBuffer.putInt(DirectStreamCommands.START_SENDING.getValue());
         byteBuffer.putInt(memory_address);
         byteBuffer.putInt(length_in_bytes);
 
         // build and send SDP message
-        sender.sendData(new SDPMessage(placement_x, placement_y, placement_p,
+        sender.send(new SDPMessage(placement_x, placement_y, placement_p,
                 port_connection, SDPMessage.REPLY_NOT_EXPECTED, 255, 255, 255,
                 0, 0, byteBuffer.array()));
     }
@@ -366,10 +353,10 @@ public class HostDataReceiver extends Thread {
             + "machine. Please try removing firewalls.";
 
     private class ProcessorThread extends Thread {
-        private final UDPConnection connection;
+        private final SDPConnection connection;
         private int timeoutcount = 0;
 
-        public ProcessorThread(UDPConnection connection) {
+        public ProcessorThread(SDPConnection connection) {
             super("ProcessorThread");
             this.connection = connection;
         }
@@ -415,9 +402,9 @@ public class HostDataReceiver extends Thread {
     }
 
     private class ReaderThread extends Thread {
-        private final UDPConnection connection;
+        private final SDPConnection connection;
 
-        public ReaderThread(UDPConnection connection) {
+        public ReaderThread(SDPConnection connection) {
             super("ReadThread");
             this.connection = connection;
         }
@@ -427,7 +414,7 @@ public class HostDataReceiver extends Thread {
             // While socket is open add messages to the queue
             try {
                 do {
-                    DatagramPacket recvd = connection.receiveData(400);
+                    DatagramPacket recvd = connection.receive();
                     if (recvd != null) {
                         messqueue.put(recvd);
                         log.fine("pushed");

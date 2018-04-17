@@ -1,4 +1,4 @@
-package commonClasses;
+package spiNNManClasses;
 
 public class SDPHeader {
     private final byte destination_chip_x;

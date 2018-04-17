@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
 
 public class DataOutMainEntrance {
 
@@ -47,15 +46,15 @@ public class DataOutMainEntrance {
         }
     };
 
-    private static Logger log = Logger.getLogger(
-        DataOutMainEntrance.class.getName());
+    private static Logger log = Logger
+            .getLogger(DataOutMainEntrance.class.getName());
 
     public static void main(String[] args) {
 
         long startTime = System.nanoTime();
         if (args.length != 12) {
             System.err.println("not the correct number of parameters");
-            System.err.printf(" got %d args instead", args.length);
+            System.err.printf(" got %d args instead\n", args.length);
             System.exit(1);
         }
 
@@ -99,9 +98,9 @@ public class DataOutMainEntrance {
         }
 
         long estimatedTime = System.nanoTime() - startTime;
-        double seconds = (double)estimatedTime / 1000000000.0;
-        System.out.println(
-            "time taken to extract 20 MB just java is" + seconds + "MBS of " 
-            + (((length_in_bytes) /1024 / 1024) * 8) / seconds);
+        double seconds = (double) estimatedTime / 1000000000.0;
+        System.out.printf(
+                "time taken to extract 20 MB just java is %fs; MBS of %f\n",
+                seconds, ((length_in_bytes / 1024 / 1024) * 8) / seconds);
     }
 }
