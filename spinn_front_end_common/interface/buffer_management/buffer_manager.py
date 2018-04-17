@@ -572,8 +572,10 @@ class BufferManager(object):
                     extra_monitor_cores_for_router_timeout=(
                         self._extra_monitor_cores))
 
-        # get data
+        # get data for the java
+
         for vertex in vertices:
+
             placement = self._placements.get_placement_of_vertex(vertex)
             for recording_region_id in vertex.get_recorded_region_ids():
                 self.get_data_for_vertex(placement, recording_region_id)
