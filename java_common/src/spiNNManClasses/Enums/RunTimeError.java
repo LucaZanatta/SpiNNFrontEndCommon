@@ -26,8 +26,8 @@ public enum RunTimeError {
     API(19),
     SARK_VERSRION_INCORRECT(20);
 
-    private static final HashMap<Integer, RunTimeError> map = new HashMap<>();
     private final int value;
+    private static final HashMap<Integer, RunTimeError> map = new HashMap<>();
 
     RunTimeError(int value){
         this.value = value;
@@ -35,7 +35,7 @@ public enum RunTimeError {
     
     static {
         for (RunTimeError runTimeError : RunTimeError.values()) {
-            map.put(RunTimeError.value, runTimeError);
+            map.put(runTimeError.value, runTimeError);
         }
     }
     
