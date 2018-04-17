@@ -1,4 +1,4 @@
-package common_classes;
+package commonClasses;
 
 import static java.lang.System.arraycopy;
 
