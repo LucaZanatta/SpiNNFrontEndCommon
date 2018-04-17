@@ -12,8 +12,8 @@ package commonClasses;
 public class Location implements Comparable<Location>{
     private final int _x;
     private final int _y;
-    private final int _p;
-    private final int _region_id;
+    private final Integer _p;
+    private final Integer _region_id;
     
     
     public Location(int x, int y, int p, int region_id){
@@ -27,7 +27,14 @@ public class Location implements Comparable<Location>{
         this._x = x;
         this._y = y;
         this._p = p;    
-        this._region_id = -1;
+        this._region_id = null;
+    }
+    
+    public Location(int x, int y){
+        this._x = x;
+        this._y = y;
+        this._p = null;    
+        this._region_id = null;
     }
     
     @Override
