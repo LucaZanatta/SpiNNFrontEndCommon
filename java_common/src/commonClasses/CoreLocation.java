@@ -18,6 +18,10 @@ public class CoreLocation implements HasCoreLocation {
         this.x = x;
         this.y = y;
         this.p = p;
+        // TODO make this validation aware of SpiNNaker 2
+        if (p < 0 || p >= 18) {
+            throw new IllegalArgumentException("bad processor ID");
+        }
     }
 
     @Override

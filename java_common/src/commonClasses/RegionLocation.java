@@ -21,24 +21,26 @@ public class RegionLocation implements HasRegionLocation {
             return false;
 
         RegionLocation that = (RegionLocation) obj;
-        return (this.x == that.x) && (this.y == that.y) && (this.p == that.p) && (this.regionID == that.regionID);
+        return (this.x == that.x) && (this.y == that.y) && (this.p == that.p)
+                && (this.regionID == that.regionID);
     }
 
     @Override
     public int hashCode() {
-        return (((((this.x << 4) ^ this.y) << 4) ^ this.p) << 3) ^ this.regionID;
+        return (((((this.x << 4) ^ this.y) << 4) ^ this.p) << 3)
+                ^ this.regionID;
     }
-    
+
     @Override
     public int getX() {
         return this.x;
     }
-    
+
     @Override
     public int getY() {
         return this.y;
     }
-    
+
     @Override
     public int getP() {
         return this.p;
