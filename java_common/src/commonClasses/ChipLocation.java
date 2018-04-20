@@ -9,7 +9,7 @@ package commonClasses;
  *
  * @author alan
  */
-public class ChipLocation implements Comparable<ChipLocation>{
+public class ChipLocation{
     protected final int x;
     protected final int y;
     
@@ -27,7 +27,10 @@ public class ChipLocation implements Comparable<ChipLocation>{
             return false;
         
         ChipLocation that = (ChipLocation)obj;
-        return this.equals(that);    
+        if (this.x == that.get_x() && (this.y == that.get_y())){
+            return true;
+        }
+        return false; 
     }
 
     @Override
@@ -35,17 +38,6 @@ public class ChipLocation implements Comparable<ChipLocation>{
         return this.x + this.y;
     }
 
-    @Override
-    public int compareTo(ChipLocation that){
-        //returns -1 if "this" object is less than "that" object
-        //returns 0 if they are equal
-        //returns 1 if "this" object is greater than "that" object
-        if (this.x == that.get_x() && (this.y == that.get_y())){
-            return 0;
-        }
-        return 1;
-    }
-    
     public int get_x(){
         return this.x;
     }
