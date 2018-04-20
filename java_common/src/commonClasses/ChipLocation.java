@@ -27,10 +27,7 @@ public class ChipLocation{
             return false;
         
         ChipLocation that = (ChipLocation)obj;
-        if (this.x == that.get_x() && (this.y == that.get_y())){
-            return true;
-        }
-        return false; 
+        return ((this.x == that.get_x()) && (this.y == that.get_y())); 
     }
 
     @Override
