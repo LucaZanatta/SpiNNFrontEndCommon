@@ -1,8 +1,8 @@
-package spiNNManClasses;
+package spiNNManClasses.model;
 
-import spiNNManClasses.enums.CPUState;
-import spiNNManClasses.enums.MailBoxCommand;
-import spiNNManClasses.enums.RunTimeError;
+import spiNNManClasses.model.enums.CPUState;
+import spiNNManClasses.model.enums.MailBoxCommand;
+import spiNNManClasses.model.enums.RunTimeError;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 

@@ -1,11 +1,13 @@
+package dataOutExtractionClasses;
+
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.logging.Level.SEVERE;
 
-import spiNNManClasses.SDPConnection;
-import spiNNManClasses.SDPMessage;
-import spiNNManClasses.enums.SCPCommands;
+import spiNNManClasses.connections.SDPConnection;
+import spiNNManClasses.messages.SDPMessage;
+import spiNNManClasses.model.enums.SCPCommands;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,6 +23,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.lang.Math.min;
+import static java.lang.Math.min;
+import static java.lang.Math.min;
 
 public class HostDataReceiver extends Thread {
     private static final int QUEUE_CAPACITY = 1024;

@@ -1,4 +1,4 @@
-package bufferClasses;
+package spiNNFrontEndCommonClasses.bufferClasses;
 
 import spiNNManClasses.Transceiver;
 import commonClasses.CoreLocation;

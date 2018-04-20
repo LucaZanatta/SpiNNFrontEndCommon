@@ -1,6 +1,6 @@
 package spiNNManClasses.processes.connectionSelectors;
 
-import commonClasses.UDPConnection;
+import spiNNManClasses.connections.UDPConnection;
 import java.util.ArrayList;
 
 /**
@@ -9,6 +9,19 @@ import java.util.ArrayList;
  */
 public class MostDirectConnectionSelector {
         protected ArrayList<UDPConnection> connections = new ArrayList<>();
+        
+        protected UDPConnection connection = null;
+        
+        public MostDirectConnectionSelector(
+                ArrayList<UDPConnection> connections){
+            for (UDPConnection connection : connections){
+                if( connection.chip_x == 0 and connection.chip_y == 0:
+                    self._first_connection = connection
+                self._connections[
+                    (connection.chip_x, connection.chip_y)] = connection
+            if self._first_connection is None:
+                self._first_connection = next(iter(connections))
+            }
 }
 
 

@@ -1,4 +1,4 @@
-package spiNNManClasses.enums;
+package spiNNManClasses.model.enums;
 
 /**
  * The commands supported by the SpiNNaker Control Protocol.

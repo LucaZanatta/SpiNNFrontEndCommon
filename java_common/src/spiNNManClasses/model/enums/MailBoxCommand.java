@@ -1,4 +1,4 @@
-package spiNNManClasses.enums;
+package spiNNManClasses.model.enums;
 
 import java.util.HashMap;
 

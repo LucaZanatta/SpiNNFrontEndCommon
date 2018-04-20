@@ -1,5 +1,6 @@
 package spiNNManClasses;
 
+import spiNNManClasses.model.CPUInfo;
 import java.util.ArrayList;
 import spiNNMachineClasses.CoreSubsets;
 import spiNNManClasses.connections.ScampConnection;

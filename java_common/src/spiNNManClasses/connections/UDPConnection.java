@@ -1,4 +1,4 @@
-package commonClasses;
+package spiNNManClasses.connections;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
