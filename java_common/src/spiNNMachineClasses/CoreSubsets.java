@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  * @author alan
  */
 public class CoreSubsets implements Iterable{
-    private LinkedHashMap<ChipLocation, CoreSubset> coreSubsets = 
+    private final LinkedHashMap<ChipLocation, CoreSubset> coreSubsets = 
         new LinkedHashMap<>();
     
     public CoreSubsets(CoreSubsets to_add){
@@ -130,47 +130,56 @@ public class CoreSubsets implements Iterable{
         @return n cores
         */
         int sum = 0;
-        for (CoreSubset subset : this.iterator()) {
+        Iterator itr = this.iterator();
+        while(itr.hasNext()){
+            CoreSubset subset = (CoreSubset) itr.next();
             sum += subset.size();
         }
         return sum;
-
-    public bool contains(CoreLocation xy){
-        /** True if the given coordinates are in the set
-
-        @param xy:\
-            Either a 2-tuple of x, y coordinates or a 3-tuple or x, y,\
-            processor_id coordinates
-        @return True if the given coordinates are in the set false otherwise
-        */
-        if(xy.get_p() == null){
-            return this.isChip(xy.x, xy.y);
-        return this.isCore(xy.x, xy.y, xy.p);
-        
-    public bool contains(ChipLocation xy){
-        /** True if the given coordinates are in the set
-
-        @param xy:\
-            Either a 2-tuple of x, y coordinates or a 3-tuple or x, y,\
-            processor_id coordinates
-        @return True if the given coordinates are in the set false otherwise
-        */
     }
 
-    def __getitem__(self, x_y_tuple):
-        """ The core subset for the given x, y tuple
-        """
-        return self._core_subsets[x_y_tuple]
+    public boolean contains(CoreLocation xyp){
+        /** True if the given coordinates are in the set
 
-    def __repr__(self):
-        """ Human-readable version of the object
+        @param xyp: core location 
+        @return True if the given coordinates are in the set false otherwise
+        */
+        return this.isCore(xyp.getX(), xyp.getP(), xyp.getP());
+    }
+        
+    public boolean contains(ChipLocation xy){
+        /** True if the given coordinates are in the set
 
-        :return: string representation of the CoreSubsets
-        """
-        output = ""
-        for xy in self._core_subsets:
-            output += str(xy)
-        return output
-
+        @param xy: chip location
+        @return True if the given coordinates are in the set false otherwise
+        */
+        return this.isChip(xy.getX(), xy.getY());
+    }
     
+    public CoreSubset get(int x, int y){
+        /** returns the core subset associated with that chip, or null
+         * @param x: chip x coordinate
+         * @param y: chip y coordinate
+         * @return: the CoreSubset of the chip, or null if none exists
+         */
+        ChipLocation loc = new ChipLocation(x, y);
+        if (this.contains(loc)){
+            return this.coreSubsets.get(loc);
+        }
+        return null;
+        
+    }
+    
+    @Override
+    public String toString(){
+        /** Human-readable version of the object
+
+        @return: string representation of the CoreSubsets
+        */
+        String output = "";
+        for(CoreSubset coreSubset : this.coreSubsets.values()){
+            output += coreSubset.toString();
+        }
+        return output;
+    }
 }
