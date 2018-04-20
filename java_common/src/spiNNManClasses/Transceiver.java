@@ -3,12 +3,12 @@ package spiNNManClasses;
 import spiNNManClasses.model.CPUInfo;
 import java.util.ArrayList;
 import spiNNMachineClasses.CoreSubsets;
-import spiNNManClasses.connections.ScampConnection;
+import spiNNManClasses.processes.connectionSelectors.
+    MostDirectConnectionSelector;
 
 public class Transceiver {
     
-    private final ArrayList<ScampConnection> scampConnectionSelector = 
-        new ArrayList<>();
+    private MostDirectConnectionSelector scampConnectionSelector = null;
     
     public Transceiver(){
         
@@ -75,7 +75,7 @@ public class Transceiver {
                         chip.x, chip.y, processor.processor_id)*/
         }
         
-        process = GetCPUInfoProcess(this._scamp_connection_selector)
+        process = GetCPUInfoProcess(scampConnectionSelector);
         cpu_info = process.get_cpu_info(core_subsets)
         return cpu_info
     
