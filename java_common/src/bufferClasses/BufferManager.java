@@ -1,7 +1,7 @@
 package bufferClasses;
 
 import spiNNManClasses.Transceiver;
-import commonClasses.Location;
+import commonClasses.CoreLocation;
 
 public class BufferManager {
     
@@ -10,7 +10,7 @@ public class BufferManager {
     }
     
     private int locate_memory_region_for_placement(
-            Location placement, int region, Transceiver transceiver){
+            CoreLocation placement, int region, Transceiver transceiver){
     /* Get the address of a region for a placement
 
     :param region: the region to locate the base address of
