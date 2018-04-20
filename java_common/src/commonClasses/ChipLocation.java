@@ -9,37 +9,39 @@ package commonClasses;
  *
  * @author alan
  */
-public class ChipLocation{
-    protected final int x;
-    protected final int y;
-    
-    
-    public ChipLocation(int x, int y){
+public class ChipLocation implements HasChipLocation {
+    private final int x;
+    private final int y;
+
+    public ChipLocation(int x, int y) {
         this.x = x;
         this.y = y;
+        // TODO: validate x and y for physical sanity
     }
-    
+
     @Override
-    public boolean equals(Object obj){
-        if (this == obj) 
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (!(obj instanceof ChipLocation)) 
+        if (!(obj instanceof ChipLocation))
             return false;
-        
-        ChipLocation that = (ChipLocation)obj;
-        return ((this.x == that.get_x()) && (this.y == that.get_y())); 
+
+        ChipLocation that = (ChipLocation) obj;
+        return (this.x == that.x) && (this.y == that.y);
     }
 
     @Override
-    public int hashCode(){
-        return this.x + this.y;
+    public int hashCode() {
+        return (this.x << 4) ^ this.y;
     }
 
-    public int get_x(){
+    @Override
+    public int getX() {
         return this.x;
     }
-    
-    public int get_y(){
+
+    @Override
+    public int getY() {
         return this.y;
     }
 }

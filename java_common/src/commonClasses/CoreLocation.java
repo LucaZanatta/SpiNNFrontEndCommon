@@ -9,43 +9,45 @@ package commonClasses;
  *
  * @author alan
  */
-public class CoreLocation extends ChipLocation{
-    protected final int p;
-    
-    public CoreLocation(int x, int y, int p){
-        super(x, y);
-        this.p = p;    
+public class CoreLocation implements HasCoreLocation {
+    private final int x;
+    private final int y;
+    private final int p;
+
+    public CoreLocation(int x, int y, int p) {
+        this.x = x;
+        this.y = y;
+        this.p = p;
     }
-   
-    
+
     @Override
-    public boolean equals(Object obj){
-        if (this == obj) 
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (!(obj instanceof CoreLocation)) 
+        if (!(obj instanceof CoreLocation))
             return false;
-        
-        CoreLocation that = (CoreLocation)obj;
-        return this.equals(that);    
+
+        CoreLocation that = (CoreLocation) obj;
+        return (this.x == that.x) && (this.y == that.y) && (this.p == that.p);
     }
 
     @Override
-    public int hashCode(){
-        return this.x + this.y + this.p;
+    public int hashCode() {
+        return (((this.x << 4) ^ this.y) << 4) ^ this.p;
     }
 
-    public int compareTo(CoreLocation that){
-        //returns -1 if "this" object is less than "that" object
-        //returns 0 if they are equal
-        //returns 1 if "this" object is greater than "that" object
-        if (this.x == that.get_x() && (this.y == that.get_y()) && 
-                (this.p == that.get_p())){
-            return 0;
-        }
-        return 1;
+    @Override
+    public int getX() {
+        return this.x;
     }
-    
-    public int get_p(){
+
+    @Override
+    public int getY() {
+        return this.y;
+    }
+
+    @Override
+    public int getP() {
         return this.p;
     }
 }
