@@ -8,6 +8,7 @@ package commonClasses;
 /**
  *
  * @author alan
+ * @author dkf
  */
 public class CoreLocation implements HasCoreLocation {
     private final int x;
@@ -37,21 +38,21 @@ public class CoreLocation implements HasCoreLocation {
 
     @Override
     public int hashCode() {
-        return (((this.x << 4) ^ this.y) << 4) ^ this.p;
+        return (((x << 4) ^ y) << 4) ^ p;
     }
 
     @Override
-    public int getX() {
-        return this.x;
+    public final int getX() {
+        return x;
     }
 
     @Override
-    public int getY() {
-        return this.y;
+    public final int getY() {
+        return y;
     }
 
     @Override
-    public int getP() {
-        return this.p;
+    public final int getP() {
+        return p;
     }
 }

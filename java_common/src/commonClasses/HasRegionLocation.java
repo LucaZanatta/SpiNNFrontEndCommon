@@ -1,5 +1,9 @@
 package commonClasses;
 
+/**
+ * 
+ * @author dkf
+ */
 public interface HasRegionLocation extends HasCoreLocation {
     /**
      * @return The region ID.

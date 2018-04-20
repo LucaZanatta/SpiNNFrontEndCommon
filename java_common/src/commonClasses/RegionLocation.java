@@ -1,5 +1,9 @@
 package commonClasses;
 
+/**
+ * 
+ * @author dkf
+ */
 public class RegionLocation implements HasRegionLocation {
     private final int x;
     private final int y;
@@ -27,27 +31,26 @@ public class RegionLocation implements HasRegionLocation {
 
     @Override
     public int hashCode() {
-        return (((((this.x << 4) ^ this.y) << 4) ^ this.p) << 3)
-                ^ this.regionID;
+        return (((((x << 4) ^ y) << 4) ^ p) << 3) ^ regionID;
     }
 
     @Override
-    public int getX() {
-        return this.x;
+    public final int getX() {
+        return x;
     }
 
     @Override
-    public int getY() {
-        return this.y;
+    public final int getY() {
+        return y;
     }
 
     @Override
-    public int getP() {
-        return this.p;
+    public final int getP() {
+        return p;
     }
 
     @Override
-    public int getRegionID() {
-        return this.regionID;
+    public final int getRegionID() {
+        return regionID;
     }
 }

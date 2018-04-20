@@ -1,5 +1,9 @@
 package commonClasses;
 
+/**
+ * 
+ * @author dkf
+ */
 public interface HasChipLocation {
     /**
      * @return The X coordinate of the chip.

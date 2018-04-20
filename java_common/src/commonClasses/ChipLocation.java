@@ -8,6 +8,7 @@ package commonClasses;
 /**
  *
  * @author alan
+ * @author dkf
  */
 public class ChipLocation implements HasChipLocation {
     private final int x;
@@ -32,16 +33,16 @@ public class ChipLocation implements HasChipLocation {
 
     @Override
     public int hashCode() {
-        return (this.x << 4) ^ this.y;
+        return (x << 4) ^ y;
     }
 
     @Override
-    public int getX() {
-        return this.x;
+    public final int getX() {
+        return x;
     }
 
     @Override
-    public int getY() {
-        return this.y;
+    public final int getY() {
+        return y;
     }
 }
