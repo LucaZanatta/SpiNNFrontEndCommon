@@ -5,7 +5,7 @@ import static java.util.logging.Level.SEVERE;
 
 import spiNNManClasses.SDPConnection;
 import spiNNManClasses.SDPMessage;
-import spiNNManClasses.Enums.SCPCommands;
+import spiNNManClasses.enums.SCPCommands;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

@@ -18,13 +18,13 @@ public class CoreSubsets implements Iterable{
         Iterator itr = to_add.iterator();
         while(itr.hasNext()){
             CoreSubset element = (CoreSubset) itr.next();
-            this.add_core_subset(element);
+            this.addCoreSubset(element);
         }
     }
     
     public CoreSubsets(){}
     
-    public final void add_core_subset(CoreSubset coreSubset){
+    public final void addCoreSubset(CoreSubset coreSubset){
         /** Add a core subset to the set
 
         @param core_subset: The core subset to add
@@ -42,18 +42,18 @@ public class CoreSubsets implements Iterable{
         }
     }
     
-    public void add_core_subsets(ArrayList<CoreSubset> coreSubsets){
+    public void addCoreSubsets(ArrayList<CoreSubset> coreSubsets){
         /** merges a core subsets into this one
 
         @param core_subsets: the core subsets to add
         @return void
         */
         for (CoreSubset coreSubset : coreSubsets){
-            this.add_core_subset(coreSubset);
+            this.addCoreSubset(coreSubset);
         }
     }
 
-    public void add_processor(int x, int y, int processor_id){
+    public void addProcessor(int x, int y, int processor_id){
         /** Add a processor on a given chip to the set
 
         @param x: The x-coordinate of the chip
@@ -63,7 +63,7 @@ public class CoreSubsets implements Iterable{
         */
         ChipLocation xy = new ChipLocation(x, y);
         if (!this.coreSubsets.containsKey(xy)){
-            this.add_core_subset(new CoreSubset(x, y, new ArrayList<>()));
+            this.addCoreSubset(new CoreSubset(x, y, new ArrayList<>()));
         this.coreSubsets.get(xy).addProcessor(processor_id);
         }
     }
