@@ -1,6 +1,8 @@
 package spiNNManClasses.messages;
 
-public class SDPHeader {
+import java.nio.ByteBuffer;
+
+public class SDPHeader extends SpiNNakerMessagePart {
     private final byte destinationChipX;
     private final byte destinationChipY;
     private final byte destinationChipP;
@@ -11,17 +13,15 @@ public class SDPHeader {
     private byte sourceCpu;
     private byte sourceChipX;
     private byte sourceChipY;
-    private final int length = 10;
+    public static final int LENGTH = 10;
 
     private static final byte toByte(int x) {
         return (byte) (x & 0xFF);
     }
 
-    public SDPHeader(
-            int destinationChipX, int destinationChipY,
+    public SDPHeader(int destinationChipX, int destinationChipY,
             int destinationChipP, int destinationPort, int flags, int tag,
-            int sourcePort, int sourceCpu, int sourceChipX,
-            int sourceChipY) {
+            int sourcePort, int sourceCpu, int sourceChipX, int sourceChipY) {
         this.destinationChipX = toByte(destinationChipX);
         this.destinationChipY = toByte(destinationChipY);
         this.destinationChipP = toByte(destinationChipP);
@@ -34,6 +34,21 @@ public class SDPHeader {
         this.sourceChipY = toByte(sourceChipY);
     }
 
+    public SDPHeader(ByteBuffer data, int offset) {
+        this.flags = data.get(offset + 2);
+        this.tag = data.get(offset + 3);
+        byte dst = data.get(offset + 4);
+        this.destinationPort = (byte) ((dst >> 5) & 7);
+        this.destinationChipP = (byte) (dst & 31);
+        byte src = data.get(offset + 5);
+        this.sourcePort = (byte) ((src >> 5) & 7);
+        this.sourceCpu = (byte) (src & 31);
+        this.destinationChipY = data.get(offset + 6);
+        this.destinationChipX = data.get(offset + 7);
+        this.sourceChipY = data.get(offset + 8);
+        this.sourceChipX = data.get(offset + 9);
+    }
+
     byte[] convertByteArray() {
         byte[] messageData = new byte[getLength()];
 
@@ -43,13 +58,12 @@ public class SDPHeader {
         messageData[3] = getTag();
 
         // Compose Dest_port+cpu = 3 MSBs as port and 5 LSBs as cpu
-        messageData[4] = 
-            toByte(((getDestinationPort() & 7) << 5) | 
-                    (getDestinationChipP() & 31));
+        messageData[4] = toByte(((getDestinationPort() & 7) << 5)
+                | (getDestinationChipP() & 31));
 
         // Compose Source_port+cpu = 3 MSBs as port and 5 LSBs as cpu
-        messageData[5] = 
-            toByte(((getSourcePort() & 7) << 5) | (getSourceCpu() & 31));
+        messageData[5] = toByte(
+                ((getSourcePort() & 7) << 5) | (getSourceCpu() & 31));
         messageData[6] = getDestinationChipY();
         messageData[7] = getDestinationChipX();
         messageData[8] = getSourceChipY();
@@ -65,47 +79,48 @@ public class SDPHeader {
     /**
      * @return the destinationChipX
      */
-    public byte getDestinationChipX() {
+    public final byte getDestinationChipX() {
         return destinationChipX;
     }
 
     /**
      * @return the destinationChipY
      */
-    public byte getDestinationChipY() {
+    public final byte getDestinationChipY() {
         return destinationChipY;
     }
 
     /**
      * @return the destinationChipP
      */
-    public byte getDestinationChipP() {
+    public final byte getDestinationChipP() {
         return destinationChipP;
     }
 
     /**
      * @return the destinationPort
      */
-    public byte getDestinationPort() {
+    public final byte getDestinationPort() {
         return destinationPort;
     }
 
     /**
      * @return the flags
      */
-    public byte getFlags() {
+    public final byte getFlags() {
         return flags;
     }
 
     /**
      * @return the tag
      */
-    public byte getTag() {
+    public final byte getTag() {
         return tag;
     }
 
     /**
-     * @param tag the tag to set
+     * @param tag
+     *            the tag to set
      */
     public void setTag(byte tag) {
         this.tag = tag;
@@ -114,12 +129,13 @@ public class SDPHeader {
     /**
      * @return the sourcePort
      */
-    public byte getSourcePort() {
+    public final byte getSourcePort() {
         return sourcePort;
     }
 
     /**
-     * @param sourcePort the sourcePort to set
+     * @param sourcePort
+     *            the sourcePort to set
      */
     public void setSourcePort(byte sourcePort) {
         this.sourcePort = sourcePort;
@@ -128,12 +144,13 @@ public class SDPHeader {
     /**
      * @return the sourceCpu
      */
-    public byte getSourceCpu() {
+    public final byte getSourceCpu() {
         return sourceCpu;
     }
 
     /**
-     * @param sourceCpu the sourceCpu to set
+     * @param sourceCpu
+     *            the sourceCpu to set
      */
     public void setSourceCpu(byte sourceCpu) {
         this.sourceCpu = sourceCpu;
@@ -142,12 +159,13 @@ public class SDPHeader {
     /**
      * @return the sourceChipX
      */
-    public byte getSourceChipX() {
+    public final byte getSourceChipX() {
         return sourceChipX;
     }
 
     /**
-     * @param sourceChipX the sourceChipX to set
+     * @param sourceChipX
+     *            the sourceChipX to set
      */
     public void setSourceChipX(byte sourceChipX) {
         this.sourceChipX = sourceChipX;
@@ -156,12 +174,13 @@ public class SDPHeader {
     /**
      * @return the sourceChipY
      */
-    public byte getSourceChipY() {
+    public final byte getSourceChipY() {
         return sourceChipY;
     }
 
     /**
-     * @param sourceChipY the sourceChipY to set
+     * @param sourceChipY
+     *            the sourceChipY to set
      */
     public void setSourceChipY(byte sourceChipY) {
         this.sourceChipY = sourceChipY;
@@ -170,7 +189,28 @@ public class SDPHeader {
     /**
      * @return the length
      */
-    public int getLength() {
-        return length;
+    public final int getLength() {
+        return LENGTH;
+    }
+
+    @Override
+    public void appendTo(ByteBuffer b) {
+        b.limit(b.limit() + LENGTH);
+        b.put((byte) 0);
+        b.put((byte) 0);
+        b.put(getFlags());
+        b.put(getTag());
+
+        // Compose Dest_port+cpu = 3 MSBs as port and 5 LSBs as cpu
+        b.put(toByte(((getDestinationPort() & 7) << 5)
+                | (getDestinationChipP() & 31)));
+
+        // Compose Source_port+cpu = 3 MSBs as port and 5 LSBs as cpu
+        b.put(toByte(((getSourcePort() & 7) << 5) | (getSourceCpu() & 31)));
+
+        b.put(getDestinationChipY());
+        b.put(getDestinationChipX());
+        b.put(getSourceChipY());
+        b.put(getSourceChipX());
     }
 }

@@ -38,16 +38,15 @@ public enum CPUState {
     }
 
     public int getValue() {
-        return this.value;
+        return value;
     }
 
     @Override
     public String toString() {
-         return String.valueOf(this.value);
+         return String.valueOf(value);
     }
     
     public String getName(){
         return this.name();
     }
-
 }

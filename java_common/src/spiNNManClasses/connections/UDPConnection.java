@@ -9,8 +9,11 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class UDPConnection implements AutoCloseable {
+import spiNNManClasses.exceptions.SpinnmanIOException;
+
+public class UDPConnection implements Connection {
     private final DatagramSocket sock;
+    private boolean connected;
 
     // Simple passthrough constructors that allow sensible defaults
     public UDPConnection(
@@ -35,6 +38,7 @@ public class UDPConnection implements AutoCloseable {
     public UDPConnection(
             int local_port, String local_host, int remote_port,
             String remote_host, int time_out) throws SocketException {
+        connected = false;
         if (local_host == null || local_host.isEmpty()) {
             sock = new DatagramSocket();
         } else {
@@ -42,6 +46,7 @@ public class UDPConnection implements AutoCloseable {
                 new InetSocketAddress(local_host, local_port));
         }
         sock.connect(new InetSocketAddress(remote_host, remote_port));
+        connected = true;
         sock.setSoTimeout(time_out);
         sock.setReceiveBufferSize(1024 * 1024);
     }
@@ -92,9 +97,19 @@ public class UDPConnection implements AutoCloseable {
     @Override
     public void close() {
         sock.close();
+        connected = false;
+    }
+
+    @Override
+    public boolean isConnected() throws SpinnmanIOException {
+        return connected;
     }
 
     public InetSocketAddress getLocalSocketAddress() {
         return (InetSocketAddress) sock.getLocalSocketAddress();
+    }
+
+    public InetSocketAddress getRemoteSocketAddress() {
+        return (InetSocketAddress) sock.getRemoteSocketAddress();
     }
 }

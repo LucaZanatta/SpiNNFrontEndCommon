@@ -1,26 +1,30 @@
 package spiNNManClasses.connections;
 
+import static spiNNManClasses.Constants.SDP_SOURCE_CPU;
+import static spiNNManClasses.Constants.SDP_SOURCE_PORT;
+import static spiNNManClasses.Constants.SDP_TAG;
+
 import spiNNManClasses.messages.SDPHeader;
-import spiNNManClasses.Constants;
+
 /**
  *
  * @author alan
  */
 public class Utils {
 
-    public static void updateSdpHeaderForUdpSend(
-            SDPHeader sdpHeader, int sourceX, int sourceY){
-        /** Apply defaults to the sdp header for sending over UDP
-
-        @param sdpHeader: The SDP header values
-        @return: Nothing is returned
-        */
-
-        sdpHeader.setTag(Constants.SDP_TAG);
-        sdpHeader.setSourcePort(Constants.SDP_SOURCE_PORT);
-        sdpHeader.setSourceCpu(Constants.SDP_SOURCE_CPU);
+    /**
+     * Apply defaults to the SDP header for sending over UDP.
+     * 
+     * @param sdpHeader
+     *            The SDP header values
+     */
+    public static void updateSdpHeaderForUdpSend(SDPHeader sdpHeader,
+            int sourceX, int sourceY) {
+        sdpHeader.setTag(SDP_TAG);
+        sdpHeader.setSourcePort(SDP_SOURCE_PORT);
+        sdpHeader.setSourceCpu(SDP_SOURCE_CPU);
         sdpHeader.setSourceChipX((byte) sourceX);
         sdpHeader.setSourceChipY((byte) sourceY);
     }
-    
+
 }

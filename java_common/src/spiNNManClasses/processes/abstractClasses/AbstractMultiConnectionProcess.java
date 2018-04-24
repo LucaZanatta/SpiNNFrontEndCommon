@@ -1,71 +1,76 @@
 package spiNNManClasses.processes.abstractClasses;
 
 import java.util.HashMap;
+
+import spiNNManClasses.Constants;
 import spiNNManClasses.connections.SCPRequestPipeLine;
+import spiNNManClasses.connections.SCPRequestPipeLine.ErrorReceiver;
+import spiNNManClasses.connections.SCPRequestPipeLine.ResultsCallback;
 import spiNNManClasses.connections.UDPConnection;
+import spiNNManClasses.messages.SCPRequest;
+import spiNNManClasses.processes.connectionSelectors.AbstractMultiConnectionProcessConnectionSelector;
 
 /**
- *
+ * A process that uses multiple connections in communication.
+ * 
  * @author alan
+ * @author Donal
  */
-public abstract class AbstractMultiConnectionProcess {
-    /** A process that uses multiple connections in communication
-    */
-    
-    protected HashMap<UDPConnection, SCPRequestPipeLine> scpRequestPipelines = 
-            new HashMap<>();
+public abstract class AbstractMultiConnectionProcess extends AbstractProcess {
+    protected HashMap<UDPConnection, SCPRequestPipeLine> scpRequestPipelines = new HashMap<>();
+    protected static final int DEFAULT_RETRIES = 3;
     protected int nRetries = 3;
-    protected int timeout = SCP_TIMEOUT;
-        self._timeout = timeout
-        self._n_channels = n_channels
-        self._intermediate_channel_waits = intermediate_channel_waits
-        self._next_connection_selector = next_connection_selector
+    protected static final double DEFAULT_TIMEOUT = Constants.SCP_TIMEOUT;
+    protected int timeout;
+    protected static final int DEFAULT_INTERMEDIATE_WAITS = 7;
+    protected int intermediateChannelWaits;
+    protected static final int DEFAULT_CHANNELS = 8;
+    protected int nChannels;
+    protected AbstractMultiConnectionProcessConnectionSelector nextConnectionSelector;
+
+    protected AbstractMultiConnectionProcess(
+            AbstractMultiConnectionProcessConnectionSelector next_connection_selector,
+            int n_retries, double timeout, int n_channels,
+            int intermediate_channel_waits) {
+        this.timeout = (int) (timeout * 1000);
+        this.nChannels = n_channels;
+        this.nRetries = n_retries;
+        this.intermediateChannelWaits = intermediate_channel_waits;
+        this.nextConnectionSelector = next_connection_selector;
+    }
+
+    protected AbstractMultiConnectionProcess(
+            AbstractMultiConnectionProcessConnectionSelector next_connection_selector) {
+        this(next_connection_selector, DEFAULT_RETRIES, DEFAULT_TIMEOUT,
+                DEFAULT_CHANNELS, DEFAULT_INTERMEDIATE_WAITS);
+    }
+
+    protected void sendRequest(final SCPRequest request,
+            ResultsCallback callback, ErrorReceiver error_callback) {
+        if (error_callback == null) {
+            error_callback = (b) -> defaultReceiveError(request, b);
+        }
+        UDPConnection connection = nextConnectionSelector
+                .getNextConnection(request);
+        if (!scpRequestPipelines.containsKey(connection)) {
+            scpRequestPipelines.put(connection, new SCPRequestPipeLine(
+                    connection, nRetries, timeout, nChannels,
+                    intermediateChannelWaits));
+        }
+        scpRequestPipelines.get(connection).sendRequest(request, callback,
+                error_callback);
+    }
+
+    protected void sendRequest(SCPRequest request, ResultsCallback callback) {
+        sendRequest(request, callback, null);
+    }
+
+    protected void sendRequest(SCPRequest request) {
+        sendRequest(request, null, null);
+    }
+
+    protected void finish() {
+        for (SCPRequestPipeLine request_pipeline : scpRequestPipelines.values())
+            request_pipeline.finish();
+    }
 }
-
-
-from six import itervalues
-from .abstract_process import AbstractProcess
-from spinnman.connections import SCPRequestPipeLine
-from spinnman.constants import SCP_TIMEOUT
-
-
-class AbstractMultiConnectionProcess(AbstractProcess):
-    """ A process that uses multiple connections in communication
-    """
-    __slots__ = [
-        "_intermediate_channel_waits",
-        "_n_channels",
-        "_n_retries",
-        "_next_connection_selector",
-        "_scp_request_pipelines",
-        "_timeout"]
-
-    def __init__(self, next_connection_selector,
-                 n_retries=3, timeout=SCP_TIMEOUT, n_channels=8,
-                 intermediate_channel_waits=7):
-        super(AbstractMultiConnectionProcess, self).__init__()
-        self._scp_request_pipelines = dict()
-        self._n_retries = n_retries
-        self._timeout = timeout
-        self._n_channels = n_channels
-        self._intermediate_channel_waits = intermediate_channel_waits
-        self._next_connection_selector = next_connection_selector
-
-    def _send_request(self, request, callback=None, error_callback=None):
-        if error_callback is None:
-            error_callback = self._receive_error
-        connection = self._next_connection_selector.get_next_connection(
-            request)
-        if connection not in self._scp_request_pipelines:
-            scp_request_set = SCPRequestPipeLine(
-                connection, n_retries=self._n_retries,
-                packet_timeout=self._timeout,
-                n_channels=self._n_channels,
-                intermediate_channel_waits=self._intermediate_channel_waits)
-            self._scp_request_pipelines[connection] = scp_request_set
-        self._scp_request_pipelines[connection].send_request(
-            request, callback, error_callback)
-
-    def _finish(self):
-        for request_pipeline in itervalues(self._scp_request_pipelines):
-            request_pipeline.finish()

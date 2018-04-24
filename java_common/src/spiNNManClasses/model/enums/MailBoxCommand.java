@@ -31,11 +31,11 @@ public enum MailBoxCommand {
     }
 
     public int getValue() {
-        return this.value;
+        return value;
     }
 
     @Override
     public String toString() {
-         return String.valueOf(this.value);
+         return String.valueOf(value);
     }
 }

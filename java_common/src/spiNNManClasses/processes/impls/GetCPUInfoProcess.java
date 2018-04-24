@@ -1,50 +1,52 @@
 package spiNNManClasses.processes.impls;
 
-import spiNNManClasses.processes.connectionSelectors.
-    MostDirectConnectionSelector;
+import static spiNNManClasses.Constants.CPU_INFO_BYTES;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import spiNNMachineClasses.CoreSubset;
+import spiNNMachineClasses.CoreSubsets;
+import spiNNManClasses.model.CPUInfo;
+import spiNNManClasses.processes.abstractClasses.AbstractMultiConnectionProcess;
+import spiNNManClasses.processes.connectionSelectors.MostDirectConnectionSelector;
 
 /**
  *
  * @author alan
  */
-public class GetCPUInfoProcess {
-    
-    public GetCPUInfoProcess(MostDirectConnectionSelector connectionSelector){
-        
+public class GetCPUInfoProcess extends AbstractMultiConnectionProcess {
+    private List<CPUInfo> cpu_info;
+
+    public GetCPUInfoProcess(MostDirectConnectionSelector connectionSelector) {
+        super(connectionSelector);
+        cpu_info = new ArrayList<>();
+    }
+
+    private void handleResponse(int x, int y, int p, ByteBuffer responseData,
+            int responseOffset) {
+        try {
+            cpu_info.add(new CPUInfo(x, y, p, responseData, responseOffset));
+        } catch (UnsupportedEncodingException e) {
+            // Shouldn't happen
+        }
+    }
+
+    public List<CPUInfo> get_cpu_info(CoreSubsets core_subsets) {
+        for (CoreSubset core_subset : core_subsets) {
+            final int x = core_subset.getX();
+            final int y = core_subset.getY();
+
+            for (final int p : core_subset.getProcessorIDs()) {
+                sendRequest(new ReadMemory(x, y, get_vcpu_address(p),
+                        CPU_INFO_BYTES), (buffer, offset) -> {
+                            handleResponse(x, y, p, buffer, offset);
+                        });
+            }
+        }
+        finish();
+        checkForError();
+        return cpu_info;
     }
 }
-
-
-from spinnman.model import CPUInfo
-from spinnman.constants import CPU_INFO_BYTES
-from spinnman.utilities.utility_functions import get_vcpu_address
-from spinnman.messages.scp.impl import ReadMemory
-from .abstract_multi_connection_process import AbstractMultiConnectionProcess
-
-import functools
-
-
-class GetCPUInfoProcess(AbstractMultiConnectionProcess):
-    __slots__ = [
-        "_cpu_info"]
-
-    def __init__(self, connection_selector):
-        super(GetCPUInfoProcess, self).__init__(connection_selector)
-        self._cpu_info = list()
-
-    def handle_response(self, x, y, p, response):
-        self._cpu_info.append(CPUInfo(x, y, p, response.data, response.offset))
-
-    def get_cpu_info(self, core_subsets):
-        for core_subset in core_subsets:
-            x = core_subset.x
-            y = core_subset.y
-
-            for p in core_subset.processor_ids:
-                self._send_request(
-                    ReadMemory(x, y, get_vcpu_address(p), CPU_INFO_BYTES),
-                    functools.partial(self.handle_response, x, y, p))
-        self._finish()
-        self.check_for_error()
-
-        return self._cpu_info

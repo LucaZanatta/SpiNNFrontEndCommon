@@ -3,7 +3,6 @@ package spiNNManClasses.model.enums;
 import java.util.HashMap;
 
 public enum RunTimeError {
-
     NONE(0),
     RESET(1),
     UNDEF(2),
@@ -44,11 +43,11 @@ public enum RunTimeError {
     }
 
     public int getValue() {
-        return this.value;
+        return value;
     }
 
     @Override
     public String toString() {
-         return String.valueOf(this.value);
+         return String.valueOf(value);
     }
 }

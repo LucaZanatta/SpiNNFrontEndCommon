@@ -6,12 +6,14 @@ import spiNNManClasses.model.enums.RunTimeError;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
-public class CPUInfo {
+import commonClasses.HasCoreLocation;
+
+public class CPUInfo implements HasCoreLocation {
     private static final int PADDING_BYTES = 16;
     private static final int N_REGISTERS = 8;
     private static final int N_USER_REGISTERS = 4;
     private static final int APPLICATION_NAME_BYTES = 16;
-   
+
     private final int x;
     private final int y;
     private final int p;
@@ -35,234 +37,244 @@ public class CPUInfo {
     private final int iobufAddress;
     private final int softwareVersion;
     private final int[] user = new int[N_USER_REGISTERS];
-    
-    public CPUInfo( int x, int y, int p, ByteBuffer cpuData, int offset) 
-            throws UnsupportedEncodingException{
-        /*
-        :param x: The x-coordinate of a chip
-        :type x: int
-        :param y: The y-coordinate of a chip
-        :type y: int
-        :param p: The id of a core on the chip
-        :type p: int
-        :param cpu_data: A bytestring received from SDRAM on the board
-        :type cpu_data: str
-        */
+
+    /**
+     * 
+     * @param x
+     *            The x-coordinate of a chip
+     * @param y
+     *            The y-coordinate of a chip
+     * @param p
+     *            The id of a core on the chip
+     * @param cpuData
+     *            Bytes received from SDRAM on the board
+     * @param offset
+     *            Where in the byte buffer to start parsing from
+     * @throws UnsupportedEncodingException
+     */
+    public CPUInfo(int x, int y, int p, ByteBuffer cpuData, Integer offset)
+            throws UnsupportedEncodingException {
         this.x = x;
         this.y = y;
         this.p = p;
-        
+
+        if (offset != null)
+            cpuData.position(offset);
+
         // fill in registers
-        for (int index = 0; index < N_REGISTERS; index++){
-            this.registers[index] = cpuData.getInt();
+        for (int index = 0; index < N_REGISTERS; index++) {
+            registers[index] = cpuData.getInt();
         }
-        
-        this.processorStateRegister = cpuData.getInt();
-        this.stackPointer = cpuData.getInt();
-        this.linkRegister = cpuData.getInt();
-        this.runTimeError = RunTimeError.valueOf(cpuData.get());
-        this.physicalCpuId = cpuData.get();
-        this.state = CPUState.valueOf(cpuData.get());
-        this.applicationId = cpuData.get();
-        this.applicationMailBoxDataAddress = cpuData.getInt();
-        this.monitorMailboxDataAddress = cpuData.getInt();
-        this.applicationMailboxCommand = MailBoxCommand.valueOf(cpuData.get());
-        this.monitorMailboxCommand = MailBoxCommand.valueOf(cpuData.get());
-        this.softwareErrorCount = cpuData.getShort();
-        this.softwareSourceFilenameAddress = cpuData.getInt();
-        this.softwareSourceLineNumber = cpuData.getInt();
-        this.time = cpuData.getInt();
-        
-        byte [] applicationNameRaw = new byte[APPLICATION_NAME_BYTES];
-        for (int index = 0; index < APPLICATION_NAME_BYTES; index++){
+
+        processorStateRegister = cpuData.getInt();
+        stackPointer = cpuData.getInt();
+        linkRegister = cpuData.getInt();
+        runTimeError = RunTimeError.valueOf(cpuData.get());
+        physicalCpuId = cpuData.get();
+        state = CPUState.valueOf(cpuData.get());
+        applicationId = cpuData.get();
+        applicationMailBoxDataAddress = cpuData.getInt();
+        monitorMailboxDataAddress = cpuData.getInt();
+        applicationMailboxCommand = MailBoxCommand.valueOf(cpuData.get());
+        monitorMailboxCommand = MailBoxCommand.valueOf(cpuData.get());
+        softwareErrorCount = cpuData.getShort();
+        softwareSourceFilenameAddress = cpuData.getInt();
+        softwareSourceLineNumber = cpuData.getInt();
+        time = cpuData.getInt();
+
+        byte[] applicationNameRaw = new byte[APPLICATION_NAME_BYTES];
+        for (int index = 0; index < APPLICATION_NAME_BYTES; index++) {
             applicationNameRaw[index] = cpuData.get();
         }
-        this.applicationName = new String(applicationNameRaw, "UTF-8");
-        
-        this.iobufAddress = cpuData.getInt();
-        this.softwareVersion = cpuData.getInt();
-        
-        for (int index = 0; index < PADDING_BYTES; index++){
+        applicationName = new String(applicationNameRaw, "UTF-8");
+
+        iobufAddress = cpuData.getInt();
+        softwareVersion = cpuData.getInt();
+
+        for (int index = 0; index < PADDING_BYTES; index++) {
             cpuData.get();
         }
-        
-        this.user[0] = cpuData.getInt();
-        this.user[1] = cpuData.getInt();
-        this.user[2] = cpuData.getInt();
-        this.user[3] = cpuData.getInt();
-     
-        int index = this.applicationName.indexOf('\0');
-        if (index != -1){
-            this.applicationName = this.applicationName.substring(0, index);
+
+        user[0] = cpuData.getInt();
+        user[1] = cpuData.getInt();
+        user[2] = cpuData.getInt();
+        user[3] = cpuData.getInt();
+
+        int index = applicationName.indexOf('\0');
+        if (index != -1) {
+            applicationName = applicationName.substring(0, index);
         }
-        
     }
-    
+
+    private static final String OUTPUT_TEMPLATE = "%d:%d:%d %s %s %d";
+
     @Override
-    public String toString(){
-        return "" + this.getX() + ":" + this.getY() + ":" + this.getP() + " " + 
-            this.getState().getName() + " " + this.getApplicationName() +
-            " " +  this.getApplicationId();
+    public String toString() {
+        return String.format(OUTPUT_TEMPLATE, getX(), getY(), getP(),
+                getState().getName(), getApplicationName(), getApplicationId());
     }
 
     /**
-     * @return the x
+     * @return the x coordinate of the chip
      */
-    public int getX() {
+    @Override
+    public final int getX() {
         return x;
     }
 
     /**
-     * @return the y
+     * @return the y coordinate of the chip
      */
-    public int getY() {
+    @Override
+    public final int getY() {
         return y;
     }
 
     /**
-     * @return the p
+     * @return the processor ID on the chip
      */
-    public int getP() {
+    @Override
+    public final int getP() {
         return p;
     }
 
     /**
      * @return the registers
      */
-    public int[] getRegisters() {
+    public final int[] getRegisters() {
         return registers;
     }
 
     /**
-     * @return the processorStateRegister
+     * @return the processor state register
      */
-    public int getProcessorStateRegister() {
+    public final int getProcessorStateRegister() {
         return processorStateRegister;
     }
 
     /**
-     * @return the stackPointer
+     * @return the stack pointer
      */
-    public int getStackPointer() {
+    public final int getStackPointer() {
         return stackPointer;
     }
 
     /**
-     * @return the linkRegister
+     * @return the link register
      */
-    public int getLinkRegister() {
+    public final int getLinkRegister() {
         return linkRegister;
     }
 
     /**
-     * @return the runTimeError
+     * @return the runtime error
      */
-    public RunTimeError getRunTimeError() {
+    public final RunTimeError getRunTimeError() {
         return runTimeError;
     }
 
     /**
-     * @return the physicalCpuId
+     * @return the physical cpu ID
      */
-    public byte getPhysicalCpuId() {
+    public final byte getPhysicalCpuId() {
         return physicalCpuId;
     }
 
     /**
      * @return the state
      */
-    public CPUState getState() {
+    public final CPUState getState() {
         return state;
     }
 
     /**
-     * @return the applicationId
+     * @return the application ID
      */
-    public byte getApplicationId() {
+    public final byte getApplicationId() {
         return applicationId;
     }
 
     /**
-     * @return the applicationMailBoxDataAddress
+     * @return the application mailbox data address
      */
-    public int getApplicationMailBoxDataAddress() {
+    public final int getApplicationMailBoxDataAddress() {
         return applicationMailBoxDataAddress;
     }
 
     /**
-     * @return the monitorMailboxDataAddress
+     * @return the monitor mailbox data address
      */
-    public int getMonitorMailboxDataAddress() {
+    public final int getMonitorMailboxDataAddress() {
         return monitorMailboxDataAddress;
     }
 
     /**
-     * @return the applicationMailboxCommand
+     * @return the current application mailbox command
      */
-    public MailBoxCommand getApplicationMailboxCommand() {
+    public final MailBoxCommand getApplicationMailboxCommand() {
         return applicationMailboxCommand;
     }
 
     /**
-     * @return the monitorMailboxCommand
+     * @return the current monitor mailbox command
      */
-    public MailBoxCommand getMonitorMailboxCommand() {
+    public final MailBoxCommand getMonitorMailboxCommand() {
         return monitorMailboxCommand;
     }
 
     /**
-     * @return the softwareErrorCount
+     * @return the software error count
      */
-    public short getSoftwareErrorCount() {
+    public final short getSoftwareErrorCount() {
         return softwareErrorCount;
     }
 
     /**
      * @return the softwareSourceFilenameAddress
      */
-    public int getSoftwareSourceFilenameAddress() {
+    public final int getSoftwareSourceFilenameAddress() {
         return softwareSourceFilenameAddress;
     }
 
     /**
-     * @return the softwareSourceLineNumber
+     * @return the software source line number
      */
-    public int getSoftwareSourceLineNumber() {
+    public final int getSoftwareSourceLineNumber() {
         return softwareSourceLineNumber;
     }
 
     /**
      * @return the time
      */
-    public int getTime() {
+    public final int getTime() {
         return time;
     }
 
     /**
-     * @return the applicationName
+     * @return the application name
      */
-    public String getApplicationName() {
+    public final String getApplicationName() {
         return applicationName;
     }
 
     /**
-     * @return the iobufAddress
+     * @return the iobuf address
      */
-    public int getIobufAddress() {
+    public final int getIobufAddress() {
         return iobufAddress;
     }
 
     /**
-     * @return the softwareVersion
+     * @return the software version
      */
-    public int getSoftwareVersion() {
+    public final int getSoftwareVersion() {
         return softwareVersion;
     }
 
     /**
-     * @return the user
+     * @return the user registers
      */
-    public int[] getUser() {
+    public final int[] getUser() {
         return user;
     }
 }

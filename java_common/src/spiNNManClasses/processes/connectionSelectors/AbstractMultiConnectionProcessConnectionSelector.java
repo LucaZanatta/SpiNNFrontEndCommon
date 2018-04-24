@@ -1,9 +1,10 @@
 package spiNNManClasses.processes.connectionSelectors;
 
-import spiNNManClasses.messages.UDPMessage;
+import spiNNManClasses.connections.UDPConnection;
+import spiNNManClasses.messages.SCPRequest;
 
 public abstract class AbstractMultiConnectionProcessConnectionSelector {
     
-    public abstract int getNextConnection(UDPMessage message);
+    public abstract UDPConnection getNextConnection(SCPRequest message);
     
 }
