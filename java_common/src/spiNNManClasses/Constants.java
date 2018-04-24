@@ -106,19 +106,12 @@ public class Constants {
     // number of chips to check are booted fully from the middle
     public static final int NO_MIDDLE_CHIPS_TO_CHECK = 8;
 
-    // the types of read available from SARK. These values are used to tell SARK how
-    // to read the data in a time efficient manner.
-    READ_TYPES = Enum(
-        value="Read_types",
-        names=[("BYTE", 0),
-               ("HALF_WORD", 1),
-               ("WORD", 2)]
-    )
-
     // This is a mapping between read address in the mapping between word byte
     // position, the number of bytes you wish to read, and the type of time
     // efficient way to read said amount of bytes via SARK
-    address_length_dtype = {
+    public static final ArrayList<> address_length_dtype = 
+            
+            address_length_dtype = {
         (0, 0): READ_TYPES.WORD,
         (0, 1): READ_TYPES.BYTE,
         (0, 2): READ_TYPES.HALF_WORD,
