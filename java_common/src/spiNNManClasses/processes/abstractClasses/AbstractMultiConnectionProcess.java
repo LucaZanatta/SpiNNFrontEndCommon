@@ -3,6 +3,7 @@ package spiNNManClasses.processes.abstractClasses;
 import java.util.HashMap;
 import spiNNManClasses.connections.SCPRequestPipeLine;
 import spiNNManClasses.connections.UDPConnection;
+import spiNNManClasses.Constants;
 
 /**
  *
@@ -15,8 +16,8 @@ public abstract class AbstractMultiConnectionProcess {
     protected HashMap<UDPConnection, SCPRequestPipeLine> scpRequestPipelines = 
             new HashMap<>();
     protected int nRetries = 3;
-    protected int timeout = SCP_TIMEOUT;
-        self._timeout = timeout
+    protected int timeout = Constants.SCP_TIMEOUT;
+    protected int nChannels = 
         self._n_channels = n_channels
         self._intermediate_channel_waits = intermediate_channel_waits
         self._next_connection_selector = next_connection_selector
