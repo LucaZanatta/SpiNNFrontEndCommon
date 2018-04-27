@@ -119,7 +119,7 @@ class BufferManager(object):
         :type tags: :py:class:`pacman.model.tags.Tags`
         :param transceiver: \
             The transceiver to use for sending and receiving information
-        :type transceiver: :py:class:`spinnman.transceiver.Transceiver`
+        :type transceiver: :py:class:`spinnman.Transceiver`
         :param store_to_file: True if the data should be temporarily stored\
             in a file instead of in RAM (default uses RAM)
         :type store_to_file: bool
@@ -290,7 +290,7 @@ class BufferManager(object):
 
         :param vertex: the vertex to be managed
         :type vertex:\
-            :py:class:`spinnaker.pyNN.models.abstract_models.buffer_models.AbstractSendsBuffersFromHost`
+            :py:class:`~spinn_front_end_common.interface.buffer_management.buffer_models.AbstractSendsBuffersFromHost`
         """
         self._sender_vertices.add(vertex)
         self._add_buffer_listeners(vertex)
@@ -336,9 +336,9 @@ class BufferManager(object):
     def clear_recorded_data(self, x, y, p, recording_region_id):
         """ Removes the recorded data stored in memory.
 
-        :param x: placement x coord
-        :param y: placement y coord
-        :param p: placement p coord
+        :param x: placement x coordinate
+        :param y: placement y coordinate
+        :param p: placement p coordinate
         :param recording_region_id: the recording region ID
         """
         self._received_data.clear(x, y, p, recording_region_id)
@@ -360,7 +360,7 @@ class BufferManager(object):
         :type size: int
         :param vertex: The vertex to get the keys from
         :type vertex:\
-            :py:class:`spynnaker.pyNN.models.abstract_models.buffer_models.AbstractSendsBuffersFromHost`
+            :py:class:`~spinn_front_end_common.interface.buffer_management.buffer_models.AbstractSendsBuffersFromHost`
         :param region: The region of the vertex to get keys from
         :type region: int
         :return: A new message, or None if no keys can be added
@@ -397,7 +397,7 @@ class BufferManager(object):
 
         :param vertex: The vertex to get the keys from
         :type vertex:\
-            :py:class:`spynnaker.pyNN.models.abstract_models.buffer_models.AbstractSendsBuffersFromHost`
+            :py:class:`~spinn_front_end_common.interface.buffer_management.buffer_models.AbstractSendsBuffersFromHost`
         :param region: The region to get the keys from
         :type region: int
         :return: A list of messages
@@ -602,7 +602,7 @@ class BufferManager(object):
         :type recording_region_id: int
         :return: object which will contain the data
         :rtype:\
-            :py:class:`spinn_front_end_common.interface.buffer_management.buffer_models.AbstractBufferedDataStorage`
+            :py:class:`~spinn_front_end_common.interface.buffer_management.buffer_models.AbstractBufferedDataStorage`
         """
 
         # Ensure that any transfers in progress are complete first
@@ -619,7 +619,7 @@ class BufferManager(object):
         :type recording_region_id: int
         :return: object which will contain the data
         :rtype:\
-            :py:class:`spinn_front_end_common.interface.buffer_management.buffer_models.AbstractBufferedDataStorage`
+            :py:class:`~spinn_front_end_common.interface.buffer_management.buffer_models.AbstractBufferedDataStorage`
         """
         recording_data_address = \
             placement.vertex.get_recording_region_base_address(

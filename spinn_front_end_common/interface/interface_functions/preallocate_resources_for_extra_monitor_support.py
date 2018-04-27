@@ -16,8 +16,8 @@ class PreAllocateResourcesForExtraMonitorSupport(object):
             n_cores_to_allocate=1):
         """
         :param machine: SpiNNaker machine object
-        :param pre_allocated_resources: resources already pre allocated
-        :param n_cores_to_allocate: config params for how many gatherers to use
+        :param pre_allocated_resources: resources already preallocated
+        :param n_cores_to_allocate: how many gatherers to use
         """
 
         progress = ProgressBar(
@@ -75,7 +75,11 @@ class PreAllocateResourcesForExtraMonitorSupport(object):
         :param sdrams: the preallocated SDRAM requirement for these vertices
         :param cores: the preallocated cores requirement for these vertices
         :param tags: the preallocated tags requirement for these vertices
+<<<<<<< Upstream, based on master
         :param machine: the spinnMachine instance
+=======
+        :param machine: the :py:class:`~spinn_machine.Machine` instance
+>>>>>>> 9b85442 Small spelling corrections
         :param progress: the progress bar to update as needed
         :param n_cores_to_allocate: \
             how many packet gathers to allocate per chip

@@ -1,4 +1,3 @@
-# spinn front end common imports
 from pacman.model.resources import CoreResource
 from pacman.model.resources import PreAllocatedResourceContainer
 from pacman.model.resources import SpecificChipSDRAMResource
@@ -17,7 +16,6 @@ class PreAllocateResourcesForLivePacketGatherers(object):
             self, live_packet_gatherer_parameters, machine,
             pre_allocated_resources=None):
         """
-
         :param live_packet_gatherer_parameters:\
             the LPG parameters requested by the script
         :param previous_allocated_resources: other preallocated resources

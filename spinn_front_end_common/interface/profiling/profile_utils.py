@@ -32,7 +32,6 @@ def reserve_profile_region(spec, region, n_samples):
     :param region: region ID for the profile data
     :param n_samples: number of elements being sampled
     :rtype: None
-
     """
     size = get_profile_region_size(n_samples)
     spec.reserve_memory_region(

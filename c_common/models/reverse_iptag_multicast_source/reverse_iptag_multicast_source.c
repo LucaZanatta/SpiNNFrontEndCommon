@@ -715,8 +715,8 @@ static inline void eieio_command_parse_sequenced_data(
         // parse_event_pkt returns false in case there is an error and the
         // packet is dropped (i.e. as it was never received)
         log_debug("add_eieio_packet_to_sdram");
-        bool ret_value = add_eieio_packet_to_sdram(eieio_content_pkt,
-                                                   length - 4);
+        bool ret_value = add_eieio_packet_to_sdram(
+        	eieio_content_pkt, length - 4);
         log_debug("add_eieio_packet_to_sdram return value: %d", ret_value);
 
         if (ret_value) {
@@ -731,8 +731,8 @@ static inline void eieio_command_parse_sequenced_data(
     }
 }
 
-static inline bool eieio_commmand_parse_packet(eieio_msg_t eieio_msg_ptr,
-                                               uint16_t length) {
+static inline bool eieio_commmand_parse_packet(
+	eieio_msg_t eieio_msg_ptr, uint16_t length) {
     uint16_t data_hdr_value = eieio_msg_ptr[0];
     uint16_t pkt_command = data_hdr_value & (~0xC000);
 
@@ -765,8 +765,8 @@ static inline bool eieio_commmand_parse_packet(eieio_msg_t eieio_msg_ptr,
     return true;
 }
 
-static inline bool packet_handler_selector(eieio_msg_t eieio_msg_ptr,
-                                           uint16_t length) {
+static inline bool packet_handler_selector(
+	eieio_msg_t eieio_msg_ptr, uint16_t length) {
     log_debug("packet_handler_selector");
 
     uint16_t data_hdr_value = eieio_msg_ptr[0];

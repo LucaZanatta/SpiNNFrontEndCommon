@@ -1182,7 +1182,7 @@ class AbstractSpinnakerBase(SimulatorInterface):
         :param required_tokens: The tokens that must be generated
         :param optional_algorithms: optional algorithms to use
         :param provenance_name: the name for provenance
-        :return:  None
+        :return: None
         """
         # pylint: disable=too-many-arguments
         optional = optional_algorithms
@@ -2750,7 +2750,7 @@ class AbstractSpinnakerBase(SimulatorInterface):
         """ Executes the power saving mode of turning off the SpiNNaker\
             machine.
 
-        :return: bool when successful, false otherwise
+        :return: true when successful
         :rtype: bool
         """
         # already off or no machine to turn off
@@ -2790,15 +2790,14 @@ class AbstractSpinnakerBase(SimulatorInterface):
 
     @property
     def config(self):
-        """ Helper method for the front end implementations until we remove\
-            config
+        """ Provides access to the configuration for front end interfaces.
         """
         return self._config
 
     @property
     def get_number_of_available_cores_on_machine(self):
-        """ Returns the number of available cores on the machine after taking\
-            into account preallocated resources
+        """ The number of available cores on the machine after taking into\
+            account preallocated resources.
 
         :return: number of available cores
         :rtype: int

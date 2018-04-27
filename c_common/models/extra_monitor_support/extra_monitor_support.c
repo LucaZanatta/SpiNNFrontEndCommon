@@ -64,7 +64,7 @@ extern INT_HANDLER sark_int_han(void);
 #define SDP_COMMAND_FOR_SENDING_DATA 100
 
 //! start missing SDP sequence numbers in SDP
-//! (this includes n SDP packets expected)
+//! (this includes num SDP packets expected)
 #define SDP_COMMAND_FOR_START_OF_MISSING_SDP_PACKETS 1000
 
 //! other missing SDP sequence numbers in SDP

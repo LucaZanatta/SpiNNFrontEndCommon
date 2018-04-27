@@ -20,8 +20,9 @@ class InsertEdgesToLivePacketGatherers(object):
             with it
         :param machine: the SpiNNaker machine
         :param machine_graph: the machine graph
-        :param application_graph:  the app graph
-        :param graph_mapper: the graph mapper between app and machine graph
+        :param application_graph: the application graph
+        :param graph_mapper: \
+            the graph mapper between application and machine graphs
         :rtype: None
         """
         # pylint: disable=too-many-arguments
@@ -106,10 +107,10 @@ class InsertEdgesToLivePacketGatherers(object):
             partition_id, machine_edge, app_graph_edge):
         """ Handles changes to the application graph and graph mapper.
 
-        :param application_graph: the app graph
+        :param application_graph: the application graph
         :param graph_mapper: the graph mapper
         :param machine_lpg: the machine LPG
-        :param vertex: the app vertex to link to
+        :param vertex: the application vertex to link to
         :param partition_id: the partition ID to put the edge on
         :return the application edge for this vertex and LPG
         :rtype: ApplicationEdge
@@ -139,7 +140,7 @@ class InsertEdgesToLivePacketGatherers(object):
 
         :param machine_vertex: the machine vertex to locate the nearest LPG to
         :param machine_lpgs: dict of gatherers by chip placed on
-        :param machine: the spinn machine object
+        :param machine: the SpiNNaker machine object
         :param placements: the placements object
         :return: the local LPG
         :raise ConfigurationException: if a local gatherer cannot be found
