@@ -18,6 +18,8 @@ class AbstractChangableAfterRun(object):
             performed.  Note that this should return True the first time it\
             is called, as the vertex must require mapping as it has been\
             created!
+
+        :rtype: bool
         """
 
     @abstractmethod

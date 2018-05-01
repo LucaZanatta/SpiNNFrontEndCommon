@@ -17,6 +17,5 @@ class AbstractProvidesOutgoingPartitionConstraints(object):
 
         :param partition: An edge that comes out of this vertex
         :return: A list of constraints
-        :rtype: \
-            list(:py:class:`pacman.model.constraints.abstract_constraint.AbstractConstraint`)
+        :rtype: list(:py:class:`pacman.model.constraints.AbstractConstraint`)
         """
