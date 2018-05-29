@@ -47,7 +47,7 @@ class MachineGenerator(object):
         """
         # pylint: disable=too-many-arguments
 
-        # if the end user gives you scamp data, use it and don't discover them
+        # if the end user gives you SCAMP data, use it and don't discover them
         if scamp_connection_data is not None:
             scamp_connection_data = [
                 self._parse_scamp_connection(piece)
