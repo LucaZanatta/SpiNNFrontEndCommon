@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class EnergyReport(object):
-    """ A report that describes the energy usage during a SpiNNaker job.
+    """ Creates a report about the approximate total energy consumed by a\
+        SpiNNaker job execution.
     """
 
     # given from indar measurements
@@ -601,7 +602,7 @@ class EnergyReport(object):
         """ Energy usage from the loading phase
 
         :param pacman_provenance: provenance items from the PACMAN set
-        :param machine: machine rep
+        :param machine: machine description
         :param f: file writer
         :param active_chips: the chips which have end user code in them
         :param load_time: the time of the entire load time phase in ms
@@ -657,7 +658,7 @@ class EnergyReport(object):
         """ Data extraction cost
 
         :param pacman_provenance: provenance items from the PACMAN set
-        :param machine: machine rep
+        :param machine: machine description
         :param f: file writer
         :param active_chips:
         :return: cost of data extraction in Joules
@@ -743,7 +744,7 @@ class EnergyReport(object):
 
         :param machine: the machine object
         :param machine_allocation_controller: the spalloc job object
-        :return: n frames
+        :return: number of frames
         """
 
         # if not spalloc, then could be any type of board, but unknown cooling
